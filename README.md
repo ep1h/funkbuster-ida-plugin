@@ -15,6 +15,9 @@ Note: Installing PyQt5 might require you to have Microsoft Visual C++ 14.0 or gr
 
 _Developed and tested under IDA Pro 7.7 and Python 3.11.0_
 
+## Usage
+**Ctrl + Shift + D** - open main plugin window.
+
 ## User Interface Overview
 ![funkbuster-ida-plugin-UI](https://github.com/ep1h/funkbuster-ida-plugin/assets/46194184/89483e05-d5f8-4810-a1db-7f5b56fbd581)
 
