@@ -12,6 +12,7 @@ Install PyQt5 using pip for GUI functionality in plugins:
 pip install PyQt5
 ```
 Note: Installing PyQt5 might require you to have Microsoft Visual C++ 14.0 or greater and the Windows SDK installed on your system.
+#### 4. Copy all files from src to the plugins directory located within IDA Pro installation path. T
 
 _Developed and tested under IDA Pro 7.7 and Python 3.11.0_
 
