@@ -16,8 +16,7 @@ Note: Installing PyQt5 might require you to have Microsoft Visual C++ 14.0 or gr
 _Developed and tested under IDA Pro 7.7 and Python 3.11.0_
 
 ## User Interface Overview
-![funkbuster-ida-plugin-UI](https://github.com/ep1h/funkbuster-ida-plugin/assets/46194184/cf97314b-3878-4c06-876b-c24c883ac502)
-
+![funkbuster-ida-plugin-UI](https://github.com/ep1h/funkbuster-ida-plugin/assets/46194184/89483e05-d5f8-4810-a1db-7f5b56fbd581)
 
 The plugin's User Interface is composed of three major sections: **Filters**, **Results**, and **Info**, designed to facilitate a seamless and efficient function analysis and navigation experience within IDA.
 
