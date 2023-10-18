@@ -137,7 +137,7 @@ class FunkbusterForm(PluginForm):
         self.xrefs_tree = QtWidgets.QTreeWidget()
         self.xrefs_tree.setColumnCount(3)
         self.xrefs_tree.setHeaderLabels(
-            ['Address/Name', 'To', 'From', 'Call', 'Read', 'Write', 'Access', 'Inverted', 'Enabled'])
+            ['Address/Name', 'Direction', 'Call', 'Read', 'Write', 'Access', 'Inverted', 'Enabled'])
         filter_xrefs_groupbox.layout().addWidget(self.xrefs_tree)
         # Populate groupbox with button
         add_xref_button = QtWidgets.QPushButton("Add Xref")
@@ -146,7 +146,7 @@ class FunkbusterForm(PluginForm):
         # Align tree columns
         self.xrefs_tree.header().setStretchLastSection(False)
         self.xrefs_tree.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        for i in range(1, 9):
+        for i in range(1, 8):
             self.xrefs_tree.header().setSectionResizeMode(
                 i, QtWidgets.QHeaderView.ResizeToContents)
 
@@ -161,11 +161,16 @@ class FunkbusterForm(PluginForm):
     def _add_xref_filter(self):
         xref_item = QtWidgets.QTreeWidgetItem(self.xrefs_tree)
         xref_item.setText(0, "")
+        combo = QtWidgets.QComboBox()
+        combo.addItem('To')
+        combo.addItem('From')
+        combo.addItem('Bidirectional')
+        xref_item.treeWidget().setItemWidget(xref_item, 1, combo)
         xref_item.setFlags(xref_item.flags() | QtCore.Qt.ItemIsEditable)
-        for i in range(1, 9):
+        for i in range(2, 9):
             xref_item.setCheckState(i, QtCore.Qt.Checked)
         xref_item.setFlags(xref_item.flags() | QtCore.Qt.ItemIsUserCheckable)
-        xref_item.setCheckState(7, QtCore.Qt.Unchecked)  # Uncheck inverted
+        xref_item.setCheckState(6, QtCore.Qt.Unchecked)  # Uncheck inverted
 
     def _setup_context_menu(self, tree_widget, event):
         item = tree_widget.itemAt(event)
@@ -608,16 +613,17 @@ class FunkbusterForm(PluginForm):
         for i in range(self.xrefs_tree.topLevelItemCount()):
             item = self.xrefs_tree.topLevelItem(i)
             data = item.text(0).strip()
-            if item.checkState(8) == QtCore.Qt.Checked and data:
+            if item.checkState(7) == QtCore.Qt.Checked and data:
+                combo = item.treeWidget().itemWidget(item, 1)
                 filter_configuration = {
                     "type": "xrefs",
-                    "to": item.checkState(1) == QtCore.Qt.Checked,
-                    "from": item.checkState(2) == QtCore.Qt.Checked,
-                    "call": item.checkState(3) == QtCore.Qt.Checked,
-                    "read": item.checkState(4) == QtCore.Qt.Checked,
-                    "write": item.checkState(5) == QtCore.Qt.Checked,
-                    "access": item.checkState(6) == QtCore.Qt.Checked,
-                    "invert": item.checkState(7) == QtCore.Qt.Checked,
+                    "to": combo.currentText().strip() == "To" or combo.currentText().strip() == "Bidirectional",
+                    "from": combo.currentText().strip() == "From" or combo.currentText().strip() == "Bidirectional",
+                    "call": item.checkState(2) == QtCore.Qt.Checked,
+                    "read": item.checkState(3) == QtCore.Qt.Checked,
+                    "write": item.checkState(4) == QtCore.Qt.Checked,
+                    "access": item.checkState(5) == QtCore.Qt.Checked,
+                    "invert": item.checkState(6) == QtCore.Qt.Checked,
                 }
                 try:
                     filter_configuration["data"] = int(data, 16)
