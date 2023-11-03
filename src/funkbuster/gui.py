@@ -8,10 +8,10 @@ from PyQt5.QtWidgets import QSplitter
 #     def __init__(self, title):
 #         super().__init__(title)
 #     def mousePressEvent(self, event):
-#         print("event.button: ", event.button())
+#         print_dbg("event.button: ", event.button())
 #     def mouseDoubleClickEvent(self, event):
 #         self.hide()
-#         print("event.button: ", event.button())
+#         print_dbg("event.button: ", event.button())
 
 
 class FunkbusterForm(PluginForm):

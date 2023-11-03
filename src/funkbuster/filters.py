@@ -83,7 +83,6 @@ def apply_xref_filter(
 
 def apply_flow_filter(func_ea_list: list, function_ea: int, depth: int, to_flag: bool, from_flag: bool, inverted: bool = False) -> list[int]:
     result = []
-    print("args: ", function_ea, depth, to_flag, from_flag, inverted)
     for func_ea in func_ea_list:
         if to_flag:
             flows_to = fk.get_call_flows(func_ea, function_ea, depth)

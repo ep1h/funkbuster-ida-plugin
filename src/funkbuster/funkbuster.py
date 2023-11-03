@@ -19,6 +19,10 @@ import idc
 # import idatopy
 
 
+def print_dbg(*args):
+    pass
+    # print(*args)
+
 def reload_submodules():
     import importlib
     import sys
@@ -63,20 +67,20 @@ class FunkbusterPlugin(idaapi.plugin_t):
         functions_for_gui = [(func_addr, fk.get_function_name(func_addr))
                              for func_addr in idaif.get_all_functions()]
         self.gui.set_results(functions_for_gui)
-        # print("names!: ", len(idaif.get_all_data()), idaif.get_all_data())
-        # print("flow from 0x404F00 to 0x401840:")
+        # print_dbg("names!: ", len(idaif.get_all_data()), idaif.get_all_data())
+        # print_dbg("flow from 0x404F00 to 0x401840:")
         # flows = fk.get_call_flows(0x404F00, 0x401840, 4)
         # for flow in flows:
-        #     print("")
+        #     print_dbg("")
         #     x = 0
         #     for func in flow:
-        #         print(x * " ", hex(func))
+        #         print_dbg(x * " ", hex(func))
         #         x += 1
 
-        # print(idaif.get_function_flows(0x404F00, 0x408FF0, 4))
+        # print_dbg(idaif.get_function_flows(0x404F00, 0x408FF0, 4))
 
     def on_analyze_button_clicked(self, only_current: bool):
-        print("analyze_button_clicked: ", only_current)
+        print_dbg("analyze_button_clicked: ", only_current)
 
         target_list = []
         if only_current:
@@ -88,34 +92,34 @@ class FunkbusterPlugin(idaapi.plugin_t):
 
         for filter in filters:
             if filter["type"] == "signature":
-                print("Signature filter")
-                print("Inverted: ", filter["invert"])
-                print("Data: ", filter["data"])
+                print_dbg("Signature filter")
+                print_dbg("Inverted: ", filter["invert"])
+                print_dbg("Data: ", filter["data"])
                 target_list = apply_signature_filter(
                     target_list, filter["data"], filter["invert"])
             elif filter["type"] == "xrefs":
-                print("Xrefs filter")
-                print("Inverted: ", filter["invert"])
-                print("To: ", filter["to"])
-                print("From: ", filter["from"])
-                print("Call: ", filter["call"])
-                print("Read: ", filter["read"])
-                print("Write: ", filter["write"])
-                print("Access: ", filter["access"])
+                print_dbg("Xrefs filter")
+                print_dbg("Inverted: ", filter["invert"])
+                print_dbg("To: ", filter["to"])
+                print_dbg("From: ", filter["from"])
+                print_dbg("Call: ", filter["call"])
+                print_dbg("Read: ", filter["read"])
+                print_dbg("Write: ", filter["write"])
+                print_dbg("Access: ", filter["access"])
                 if filter["data_type"] == "name":
                     filter["data"] = idaif.get_ea_by_name(filter["data"])
-                print("Data: ", filter["data"])
+                print_dbg("Data: ", filter["data"])
                 target_list = apply_xref_filter(target_list, filter["data"], filter["to"], filter["from"],
                                                 filter["call"], filter["read"], filter["write"], filter["access"], filter["invert"])
             elif filter["type"] == "flow":
-                print("Flow filter")
-                print("To: ", filter["to"])
-                print("From: ", filter["from"])
-                print("Depth: ", filter["depth"])
-                print("Inverted: ", filter["invert"])
+                print_dbg("Flow filter")
+                print_dbg("To: ", filter["to"])
+                print_dbg("From: ", filter["from"])
+                print_dbg("Depth: ", filter["depth"])
+                print_dbg("Inverted: ", filter["invert"])
                 if filter["data_type"] == "name":
                     filter["data"] = idaif.get_ea_by_name(filter["data"])
-                print("Data: ", filter["data"])
+                print_dbg("Data: ", filter["data"])
                 target_list = apply_flow_filter(
                     target_list, filter["data"], filter["depth"], filter["to"], filter["from"], filter["invert"])
 
@@ -124,7 +128,7 @@ class FunkbusterPlugin(idaapi.plugin_t):
         self.gui.set_results(functions_for_gui)
 
     def on_result_item_clicked(self, func_ea: int):
-        print("#on_result_item_clicked: ", func_ea)
+        print_dbg("#on_result_item_clicked: ", func_ea)
         # Build function info to display in gui
         function_info = {}
         function_info["address"] = func_ea
@@ -141,14 +145,14 @@ class FunkbusterPlugin(idaapi.plugin_t):
         function_info["vmt_calls"] = fk.get_vmt_calls(func_ea)
 
         self.gui.set_info(function_info)
-        # print(function_info)
+        # print_dbg(function_info)
 
     def on_result_item_doubleclicked(self, func_ea: int):
-        print("#on_result_item_doubleclicked: ", func_ea)
+        print_dbg("#on_result_item_doubleclicked: ", func_ea)
         ida_kernwin.jumpto(func_ea)
 
     def on_info_xrefs_from_item_doubleclicked(self, item, column):
-        print(f'From _ Item "{item}" in column {column} was double clicked.')
+        print_dbg(f'From _ Item "{item}" in column {column} was double clicked.')
         if column == 0:
             info = self.gui.get_info()
             ida_kernwin.jumpto(info["address"] + int(item, 16))
@@ -156,14 +160,14 @@ class FunkbusterPlugin(idaapi.plugin_t):
             ida_kernwin.jumpto(int(item, 16))
 
     def on_info_xrefs_to_item_doubleclicked(self, item, column):
-        print(f'To _ Item "{item}" in column {column} was double clicked.')
+        print_dbg(f'To _ Item "{item}" in column {column} was double clicked.')
         if column == 0:
             ida_kernwin.jumpto(int(item, 16))
         elif column == 2:
             ida_kernwin.jumpto(int(item, 16))
 
     def on_potentional_vmt_calls_item_doubleclicked(self, item, column):
-        print(f'Vmt _ Item "{item}" in column {column} was double clicked.')
+        print_dbg(f'Vmt _ Item "{item}" in column {column} was double clicked.')
         if column == 0:
             ida_kernwin.jumpto(int(item, 16))
 
