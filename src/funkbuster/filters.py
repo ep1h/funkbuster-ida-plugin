@@ -100,6 +100,35 @@ def apply_flow_filter(func_ea_list: list, function_ea: int, depth: int, to_flag:
                 result.append(func_ea)
     return result
 
+def apply_flow_ranged_filter(func_ea_list: list, function_ea: int, depth_min: int, depth_max: int, to_flag: bool, from_flag: bool, inverted: bool = False) -> list[int]:
+    result = set()  # Using a set to avoid duplicate entries
+
+    # Helper function to process call flows for the given direction
+    def process_call_flows(func_ea, target_ea, depth, is_to_direction):
+        flows = fk.get_call_flows(func_ea, target_ea, depth) if is_to_direction else fk.get_call_flows(target_ea, func_ea, depth)
+        # Check if any flow's length is within the specified range
+        for flow in flows:
+            if depth_min <= len(flow) <= depth_max:
+                return True
+        return False
+
+    # Iterate through each function in the list and apply the ranged filter
+    for func_ea in func_ea_list:
+        for depth in range(depth_min, depth_max + 1):
+            if to_flag and process_call_flows(func_ea, function_ea, depth, True):
+                if not inverted:
+                    result.add(func_ea)
+                break  # A valid flow was found, no need to check further depths
+            elif from_flag and process_call_flows(func_ea, function_ea, depth, False):
+                if not inverted:
+                    result.add(func_ea)
+                break  # A valid flow was found, no need to check further depths
+
+        # If no valid flows were found and inverted is True, add the function's address to the result
+        if inverted and func_ea not in result:
+            result.add(func_ea)
+
+    return list(result)
 
 def apply_size_filter(func_ea_list: list, size_min: int, size_max: int, apply_min: bool = True, apply_max: bool = True, inverted: bool = False) -> list[int]:
     def is_in_range(size: int) -> bool:

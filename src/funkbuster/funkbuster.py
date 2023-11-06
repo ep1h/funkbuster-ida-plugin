@@ -9,6 +9,7 @@ from funcs_keeper import FunctionInfo
 from filters import apply_signature_filter
 from filters import apply_xref_filter
 from filters import apply_flow_filter
+from filters import apply_flow_ranged_filter
 from filters import apply_xrefs_to_number_filter
 from filters import apply_xrefs_from_number_filter
 from filters import apply_stack_args_size_filter
@@ -119,13 +120,14 @@ class FunkbusterPlugin(idaapi.plugin_t):
                 print_dbg("Flow filter")
                 print_dbg("To: ", filter["to"])
                 print_dbg("From: ", filter["from"])
-                print_dbg("Depth: ", filter["depth"])
+                print_dbg("Depth min: ", filter["depth_min"])
+                print_dbg("Depth max: ", filter["depth_max"])
                 print_dbg("Inverted: ", filter["invert"])
                 if filter["data_type"] == "name":
                     filter["data"] = idaif.get_ea_by_name(filter["data"])
                 print_dbg("Data: ", filter["data"])
-                target_list = apply_flow_filter(
-                    target_list, filter["data"], filter["depth"], filter["to"], filter["from"], filter["invert"])
+                target_list = apply_flow_ranged_filter(
+                    target_list, filter["data"], filter["depth_min"], filter["depth_max"], filter["to"], filter["from"], filter["invert"])
 
             elif filter["type"] == "xrefs_to_number":
                 print_dbg(filter)

@@ -205,7 +205,7 @@ class FunkbusterForm(PluginForm):
         self.flows_tree = QtWidgets.QTreeWidget()
         self.flows_tree.setColumnCount(3)
         self.flows_tree.setHeaderLabels(
-            ['Address/Name', 'Direction', 'Depth', 'Inverted', 'Enabled'])
+            ['Address/Name', 'Direction', 'Depth min', 'Depth max', 'Inverted', 'Enabled'])
         filter_flow_groupbox.layout().addWidget(self.flows_tree)
         # Populate groupbox with button
         add_flow_button = QtWidgets.QPushButton("Add Flow")
@@ -222,6 +222,8 @@ class FunkbusterForm(PluginForm):
             3, QtWidgets.QHeaderView.ResizeToContents)
         self.flows_tree.header().setSectionResizeMode(
             4, QtWidgets.QHeaderView.ResizeToContents)
+        self.flows_tree.header().setSectionResizeMode(
+            5, QtWidgets.QHeaderView.ResizeToContents)
 
         self.flows_tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.flows_tree.customContextMenuRequested.connect(
@@ -239,9 +241,10 @@ class FunkbusterForm(PluginForm):
         combo.addItem('To')
         combo.addItem('From')
         flow_item.treeWidget().setItemWidget(flow_item, 1, combo)
-        flow_item.setText(2, "3")
-        flow_item.setCheckState(3, QtCore.Qt.Unchecked)
-        flow_item.setCheckState(4, QtCore.Qt.Checked)
+        flow_item.setText(2, "1") # Depth min
+        flow_item.setText(3, "3") # Depth max
+        flow_item.setCheckState(4, QtCore.Qt.Unchecked)
+        flow_item.setCheckState(5, QtCore.Qt.Checked)
         # signature_item.setCheckState(7, QtCore.Qt.Unchecked) # Uncheck inverted
 
     def _create_filter_other_groupbox(self) -> QtWidgets.QGroupBox:
@@ -731,14 +734,15 @@ class FunkbusterForm(PluginForm):
         for i in range(self.flows_tree.topLevelItemCount()):
             item = self.flows_tree.topLevelItem(i)
             data = item.text(0).strip()
-            if item.checkState(4) == QtCore.Qt.Checked and data:
+            if item.checkState(5) == QtCore.Qt.Checked and data:
                 combo = item.treeWidget().itemWidget(item, 1)
                 filter_configuration = {
                     "type": "flow",
                     "to": combo.currentText().strip() == "To",
                     "from": combo.currentText().strip() == "From",
-                    "depth": int(item.text(2)),
-                    "invert": item.checkState(3) == QtCore.Qt.Checked,
+                    "depth_min": stoi(item.text(2)),
+                    "depth_max": stoi(item.text(3)),
+                    "invert": item.checkState(4) == QtCore.Qt.Checked,
                 }
                 try:
                     filter_configuration["data"] = int(data, 16)
