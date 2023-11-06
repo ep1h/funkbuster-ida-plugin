@@ -113,3 +113,107 @@ def apply_size_filter(func_ea_list: list, size_min: int, size_max: int, apply_mi
         return [func_ea for func_ea in func_ea_list if not is_in_range(fk.get_function_size(func_ea))]
     else:
         return [func_ea for func_ea in func_ea_list if is_in_range(fk.get_function_size(func_ea))]
+
+
+def apply_xrefs_to_number_filter(func_ea_list: list, min: int, max: int, min_enabled: bool, max_enabled: bool, inverted: bool = False) -> list[int]:
+    result = []
+    if min_enabled:
+        for func_ea in func_ea_list:
+            xrefs_to_number = len(fk.get_function_calls_to_address(func_ea))
+            if xrefs_to_number >= min:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    if max_enabled:
+        if min_enabled:
+            func_ea_list = result
+            result = []
+        for func_ea in func_ea_list:
+            xrefs_to_number = len(fk.get_function_calls_to_address(func_ea))
+            if xrefs_to_number <= max:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    return result
+
+
+def apply_xrefs_from_number_filter(func_ea_list: list, min: int, max: int, min_enabled: bool, max_enabled: bool, inverted: bool = False) -> list[int]:
+    result = []
+    if min_enabled:
+        for func_ea in func_ea_list:
+            xrefs_from_number = len(fk.get_calls_from_function(func_ea))
+            if xrefs_from_number >= min:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    if max_enabled:
+        if min_enabled:
+            func_ea_list = result
+            result = []
+        for func_ea in func_ea_list:
+            xrefs_from_number = len(fk.get_calls_from_function(func_ea))
+            if xrefs_from_number <= max:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    return result
+
+
+def apply_stack_args_size_filter(func_ea_list: list, min: int, max: int, min_enabled: bool, max_enabled: bool, inverted: bool = False) -> list[int]:
+    result = []
+    if min_enabled:
+        for func_ea in func_ea_list:
+            stack_args_size = fk.get_function_stack_args_size(func_ea)
+            if stack_args_size >= min:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    if max_enabled:
+        if min_enabled:
+            func_ea_list = result
+            result = []
+        for func_ea in func_ea_list:
+            stack_args_size = fk.get_function_stack_args_size(func_ea)
+            if stack_args_size <= max:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    return result
+
+
+def apply_vmt_calls_number_filter(func_ea_list: list, min: int, max: int, min_enabled: bool, max_enabled: bool, inverted: bool = False) -> list[int]:
+    result = []
+    if min_enabled:
+        for func_ea in func_ea_list:
+            vmt_calls_number = len(fk.get_vmt_calls(func_ea))
+            if vmt_calls_number >= min:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    if max_enabled:
+        if min_enabled:
+            func_ea_list = result
+            result = []
+        for func_ea in func_ea_list:
+            vmt_calls_number = len(fk.get_vmt_calls(func_ea))
+            if vmt_calls_number <= max:
+                if not inverted:
+                    result.append(func_ea)
+            else:
+                if inverted:
+                    result.append(func_ea)
+    return result

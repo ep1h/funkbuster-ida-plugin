@@ -9,6 +9,10 @@ from funcs_keeper import FunctionInfo
 from filters import apply_signature_filter
 from filters import apply_xref_filter
 from filters import apply_flow_filter
+from filters import apply_xrefs_to_number_filter
+from filters import apply_xrefs_from_number_filter
+from filters import apply_stack_args_size_filter
+from filters import apply_vmt_calls_number_filter
 
 import gui
 
@@ -122,6 +126,36 @@ class FunkbusterPlugin(idaapi.plugin_t):
                 print_dbg("Data: ", filter["data"])
                 target_list = apply_flow_filter(
                     target_list, filter["data"], filter["depth"], filter["to"], filter["from"], filter["invert"])
+
+            elif filter["type"] == "xrefs_to_number":
+                print_dbg(filter)
+                target_list = apply_xrefs_to_number_filter(target_list,
+                                                           filter["data"].get("min", 0),
+                                                           filter["data"].get("max",0),
+                                                           filter["data"].get("min_enabled", False),
+                                                           filter["data"].get("max_enabled", False))
+                    
+            elif filter["type"] == "xrefs_from_number":
+                print_dbg(filter)
+                target_list = apply_xrefs_from_number_filter(target_list,
+                                                              filter["data"].get("min", 0),
+                                                              filter["data"].get("max",0),
+                                                              filter["data"].get("min_enabled", False),
+                                                              filter["data"].get("max_enabled", False))
+            elif filter["type"] == "args_size_number":
+                print_dbg(filter)
+                target_list = apply_stack_args_size_filter(target_list,
+                                                                filter["data"].get("min", 0),
+                                                                filter["data"].get("max",0),
+                                                                filter["data"].get("min_enabled", False),
+                                                                filter["data"].get("max_enabled", False))
+            elif filter["type"] == "vmt_calls_number":
+                print_dbg(filter)
+                target_list = apply_vmt_calls_number_filter(target_list,
+                                                              filter["data"].get("min", 0),
+                                                              filter["data"].get("max",0),
+                                                              filter["data"].get("min_enabled", False),
+                                                              filter["data"].get("max_enabled", False))
 
         functions_for_gui = [(func_addr, idaif.get_name_by_ea(func_addr))
                              for func_addr in target_list]

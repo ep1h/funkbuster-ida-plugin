@@ -13,6 +13,16 @@ from PyQt5.QtWidgets import QSplitter
 #         self.hide()
 #         print_dbg("event.button: ", event.button())
 
+def stoi(s: str) -> int:
+    try:
+        if s.startswith('0x'):
+            result = int(s, 16)
+        else:
+            result = int(s)
+        return result
+    except ValueError:
+        return 0
+    return 0
 
 class FunkbusterForm(PluginForm):
     def __init__(self):
@@ -63,6 +73,9 @@ class FunkbusterForm(PluginForm):
         # Create flows filter groupbox and add it to filters groupbox
         filter_flows_groupbox = self._create_filter_flow_groupbox()
         splitter.addWidget(filter_flows_groupbox)
+        # Create other filters groupbox and add it to filters groupbox
+        filter_other_groupbox = self._create_filter_other_groupbox()
+        splitter.addWidget(filter_other_groupbox)
         # Create Analyze groupbox and add it to filters groupbox
         analyze_groupbox = self._create_analyze_groupbox()
         splitter.addWidget(analyze_groupbox)
@@ -88,6 +101,9 @@ class FunkbusterForm(PluginForm):
         self.filters_display_flows_checkbox = QtWidgets.QCheckBox("Flows")
         self.filters_display_flows_checkbox.setChecked(True)
         filters_configure_layout.addWidget(self.filters_display_flows_checkbox)
+        self.filters_display_other_checkbox = QtWidgets.QCheckBox("Other")
+        self.filters_display_other_checkbox.setChecked(True)
+        filters_configure_layout.addWidget(self.filters_display_other_checkbox)
         filters_configure_groupbox.layout().addLayout(filters_configure_layout)
         return filters_configure_groupbox
 
@@ -227,6 +243,84 @@ class FunkbusterForm(PluginForm):
         flow_item.setCheckState(3, QtCore.Qt.Unchecked)
         flow_item.setCheckState(4, QtCore.Qt.Checked)
         # signature_item.setCheckState(7, QtCore.Qt.Unchecked) # Uncheck inverted
+
+    def _create_filter_other_groupbox(self) -> QtWidgets.QGroupBox:
+        filter_other_groupbox = QtWidgets.QGroupBox("Other")
+        grid_layout = QtWidgets.QGridLayout()
+        filter_other_groupbox.setLayout(grid_layout)
+
+        # Xrefs to number filter
+        xrefs_to_number_groupbox = QtWidgets.QGroupBox("Xrefs To Number")
+        xrefs_to_number_groupbox.setLayout(QtWidgets.QHBoxLayout())
+        self.xrefs_to_number_min_checkbox = QtWidgets.QCheckBox("Min:")
+        xrefs_to_number_groupbox.layout().addWidget(self.xrefs_to_number_min_checkbox)
+        self.xrefs_to_number_min = QtWidgets.QLineEdit()
+        self.xrefs_to_number_min.setValidator(QtGui.QIntValidator())
+        xrefs_to_number_groupbox.layout().addWidget(self.xrefs_to_number_min)
+        self.xrefs_to_number_max_checkbox = QtWidgets.QCheckBox("Max:")
+        xrefs_to_number_groupbox.layout().addWidget(self.xrefs_to_number_max_checkbox)
+        self.xrefs_to_number_max = QtWidgets.QLineEdit()
+        self.xrefs_to_number_max.setValidator(QtGui.QIntValidator())
+        xrefs_to_number_groupbox.layout().addWidget(self.xrefs_to_number_max)
+        # Xrefs from number filter
+        xrefs_from_number_groupbox = QtWidgets.QGroupBox("Xrefs From Number")
+        xrefs_from_number_groupbox.setLayout(QtWidgets.QHBoxLayout())
+        self.xrefs_from_number_min_checkbox = QtWidgets.QCheckBox("Min:")
+        xrefs_from_number_groupbox.layout().addWidget(self.xrefs_from_number_min_checkbox)
+        self.xrefs_from_number_min = QtWidgets.QLineEdit()
+        self.xrefs_from_number_min.setValidator(QtGui.QIntValidator())
+        xrefs_from_number_groupbox.layout().addWidget(self.xrefs_from_number_min)
+        self.xrefs_from_number_max_checkbox = QtWidgets.QCheckBox("Max:")
+        xrefs_from_number_groupbox.layout().addWidget(self.xrefs_from_number_max_checkbox)
+        self.xrefs_from_number_max = QtWidgets.QLineEdit()
+        self.xrefs_from_number_max.setValidator(QtGui.QIntValidator())
+        xrefs_from_number_groupbox.layout().addWidget(self.xrefs_from_number_max)
+        # Args size number filter
+        args_size_number_groupbox = QtWidgets.QGroupBox("Args Size Number")
+        args_size_number_groupbox.setLayout(QtWidgets.QHBoxLayout())
+        self.args_size_number_min_checkbox = QtWidgets.QCheckBox("Min:")
+        args_size_number_groupbox.layout().addWidget(self.args_size_number_min_checkbox)
+        self.args_size_number_min = QtWidgets.QLineEdit()
+        self.args_size_number_min.setValidator(QtGui.QIntValidator())
+        args_size_number_groupbox.layout().addWidget(self.args_size_number_min)
+        self.args_size_number_max_checkbox = QtWidgets.QCheckBox("Max:")
+        args_size_number_groupbox.layout().addWidget(self.args_size_number_max_checkbox)
+        self.args_size_number_max = QtWidgets.QLineEdit()
+        self.args_size_number_max.setValidator(QtGui.QIntValidator())
+        args_size_number_groupbox.layout().addWidget(self.args_size_number_max)
+        # VMT calls number filter
+        vmt_calls_number_groupbox = QtWidgets.QGroupBox("VMT Calls Number")
+        vmt_calls_number_groupbox.setLayout(QtWidgets.QHBoxLayout())
+        self.vmt_calls_number_min_checkbox = QtWidgets.QCheckBox("Min:")
+        vmt_calls_number_groupbox.layout().addWidget(self.vmt_calls_number_min_checkbox)
+        self.vmt_calls_number_min = QtWidgets.QLineEdit()
+        self.vmt_calls_number_min.setValidator(QtGui.QIntValidator())
+        vmt_calls_number_groupbox.layout().addWidget(self.vmt_calls_number_min)
+        self.vmt_calls_number_max_checkbox = QtWidgets.QCheckBox("Max:")
+        vmt_calls_number_groupbox.layout().addWidget(self.vmt_calls_number_max_checkbox)
+        self.vmt_calls_number_max = QtWidgets.QLineEdit()
+        self.vmt_calls_number_max.setValidator(QtGui.QIntValidator())
+        vmt_calls_number_groupbox.layout().addWidget(self.vmt_calls_number_max)
+        # Add all filters to groupbox
+        grid_layout.addWidget(xrefs_to_number_groupbox, 0, 0, alignment=QtCore.Qt.AlignLeft)
+        grid_layout.addWidget(xrefs_from_number_groupbox, 0, 1, alignment=QtCore.Qt.AlignLeft)
+        grid_layout.addWidget(args_size_number_groupbox, 1, 0, alignment=QtCore.Qt.AlignLeft)
+        grid_layout.addWidget(vmt_calls_number_groupbox, 1, 1, alignment=QtCore.Qt.AlignLeft)
+
+        character_count = 4
+        padding = 10
+        for line_edit in (self.xrefs_to_number_min, self.xrefs_to_number_max,
+                      self.xrefs_from_number_min, self.xrefs_from_number_max,
+                      self.args_size_number_min, self.args_size_number_max,
+                      self.vmt_calls_number_min, self.vmt_calls_number_max):
+            font_metrics = line_edit.fontMetrics()
+            char_width = font_metrics.width('0')
+            max_width = (char_width * character_count) + padding
+            line_edit.setMaximumWidth(max_width)
+
+        self.filters_display_other_checkbox.stateChanged.connect(
+            lambda: self._on_widget_visible_state_toggled(filter_other_groupbox))
+        return filter_other_groupbox
 
     def _create_analyze_groupbox(self) -> QtWidgets.QGroupBox:
         analyze_groupbox = QtWidgets.QGroupBox("Analyze")
@@ -654,4 +748,44 @@ class FunkbusterForm(PluginForm):
                     filter_configuration["data"] = data
                 filters_configuration.append(filter_configuration)
 
+        # Process other filters
+        xrefs_to_number_filter = {"type": "xrefs_to_number", "data": {}}
+        if self.xrefs_to_number_min_checkbox.isChecked():
+            xrefs_to_number_filter["data"]["min_enabled"] = True
+            xrefs_to_number_filter["data"]["min"] = stoi(self.xrefs_to_number_min.text())
+        if self.xrefs_to_number_max_checkbox.isChecked():
+            xrefs_to_number_filter["data"]["max_enabled"] = True
+            xrefs_to_number_filter["data"]["max"] = stoi(self.xrefs_to_number_max.text())
+        if xrefs_to_number_filter["data"]:
+            filters_configuration.append(xrefs_to_number_filter)
+
+        xrefs_from_number_filter = {"type": "xrefs_from_number", "data": {}}
+        if self.xrefs_from_number_min_checkbox.isChecked():
+            xrefs_from_number_filter["data"]["min_enabled"] = True
+            xrefs_from_number_filter["data"]["min"] = stoi(self.xrefs_from_number_min.text())
+        if self.xrefs_from_number_max_checkbox.isChecked():
+            xrefs_from_number_filter["data"]["max_enabled"] = True
+            xrefs_from_number_filter["data"]["max"] = stoi(self.xrefs_from_number_max.text())
+        if xrefs_from_number_filter["data"]:
+            filters_configuration.append(xrefs_from_number_filter)
+
+        args_size_number_filter = {"type": "args_size_number", "data": {}}
+        if self.args_size_number_min_checkbox.isChecked():
+            args_size_number_filter["data"]["min_enabled"] = True
+            args_size_number_filter["data"]["min"] = stoi(self.args_size_number_min.text())
+        if self.args_size_number_max_checkbox.isChecked():
+            args_size_number_filter["data"]["max_enabled"] = True
+            args_size_number_filter["data"]["max"] = stoi(self.args_size_number_max.text())
+        if args_size_number_filter["data"]:
+            filters_configuration.append(args_size_number_filter)
+
+        vmt_calls_number_filter = {"type": "vmt_calls_number", "data": {}}
+        if self.vmt_calls_number_min_checkbox.isChecked():
+            vmt_calls_number_filter["data"]["min_enabled"] = True
+            vmt_calls_number_filter["data"]["min"] = stoi(self.vmt_calls_number_min.text())
+        if self.vmt_calls_number_max_checkbox.isChecked():
+            vmt_calls_number_filter["data"]["max_enabled"] = True
+            vmt_calls_number_filter["data"]["max"] = stoi(self.vmt_calls_number_max.text())
+        if vmt_calls_number_filter["data"]:
+            filters_configuration.append(vmt_calls_number_filter)
         return filters_configuration
